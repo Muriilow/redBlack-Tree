@@ -299,26 +299,29 @@ void nodeDelete(struct redBlack* tree, struct node* n)
     }
     else
     {
-        temp = findMin(tree, n->right);
+        temp = findMax(tree, n->left);
         origColor = temp->color;
-        aux = temp->right;
+        aux = temp->left;
 
         if(temp->dad == n)
             aux->dad = temp;
         else
         {
-            nodeTransplant(tree, temp, temp->right);
-            temp->right = n->right;
-            temp->right->dad = n;
+            nodeTransplant(tree, temp, temp->left);
+            temp->left = n->left;
+            temp->left->dad = n;
         }
 
         nodeTransplant(tree, n, temp);
-        temp->left = n->left;
-        temp->left->dad = n;
+        temp->right = n->right;
+        temp->right->dad = temp;
         temp->color = n->color;
     }
     if(origColor == BLACK)
+    {
         deleteFixup(tree, aux);
+        tree->nil->dad = tree->nil;
+    }
 
     free(n);
 }
