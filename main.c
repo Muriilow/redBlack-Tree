@@ -16,13 +16,9 @@ int main()
     temp = NULL;
     tree = createTree();
 
-    //printf("Digite agora os proximos valores numericos da arvore redBlack\n");
-    //printf("Caso queira finalizar o programa digite qualquer caractere!\n");
-
     while (fgets(line, MAX_LINE_LENGTH, stdin) != NULL)
     {
         line[strcspn(line, "\n")] = '\0';
-        //printf("Linha lida: %s\n", line);
 
         if (sscanf(line, "%c %d", &command, &key) == 2) 
         {
@@ -31,7 +27,7 @@ int main()
                 case 'i':
                     temp = nodeCreate(tree, key);
                     nodeInsert(tree, temp);
-                    //printTreeInOrder(tree, tree->root);
+                    printTreeInOrder(tree, tree->root);
                     break;
                     
                 case 'r':
@@ -40,7 +36,7 @@ int main()
                     if(temp != NULL)
                     {
                         nodeDelete(tree, temp);
-                        //printTreeInOrder(tree, tree->root);
+                        printTreeInOrder(tree, tree->root);
                     }
                     break;
                     
@@ -50,31 +46,12 @@ int main()
         }
     }
     
-    //while(scanf("%d", &mode) == 1)
-    //{
-    //    if(mode == 1)
-    //    {
-    //        if (scanf("%d", &key) != 1)
-    //            return 1;
-
-    //        temp = nodeCreate(tree, key);
-    //        nodeInsert(tree, temp);
-    //    }
-    //    else if(mode == 2)
-    //    {
-    //        if (scanf("%d", &key) != 1)
-    //            return 1;
-
-    //        temp = nodeSearch(tree, tree->root, key);
-
-    //        if(temp != NULL)
-    //            nodeDelete(tree, temp);
-    //        
-    //    }
-    //}
-    
-    
-    //Limpando buffer
+    //Cleaning buffer
     getchar();
+
+    //Removing the rest of the tree
+    destroyTree(tree, tree->root);
+    free(tree->nil);
+    free(tree);
     return 0;
 }

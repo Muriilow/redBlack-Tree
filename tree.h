@@ -47,7 +47,7 @@ struct node* findMin(struct redBlack* tree, struct node* n);
 
 struct node* findMax(struct redBlack* tree, struct node* n);
 
-void destroyTree(struct node* n);
+void destroyTree(struct redBlack*, struct node* n);
 
 //Change the right son of x to be the father, and x to be the left child
 struct node* leftRotation(struct redBlack* tree, struct node* x);
