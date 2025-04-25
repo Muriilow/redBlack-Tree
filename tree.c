@@ -23,7 +23,6 @@ struct node* nodeSearch(struct redBlack* tree, struct node* n, int key)
     if(n == tree->nil)
         return tree->nil;
 
-    fprintf(stderr, "search\n");
     if(n->key == key)
     {
         fprintf(stderr, "found it\n");
@@ -32,11 +31,11 @@ struct node* nodeSearch(struct redBlack* tree, struct node* n, int key)
 
     if(n->key > key)
     {
-        fprintf(stderr, "left\n");
+        //fprintf(stderr, "left\n");
         return nodeSearch(tree, n->left, key);
     }
 
-    fprintf(stderr, "right\n");
+    //fprintf(stderr, "right\n");
     return nodeSearch(tree, n->right, key);
 }
 
@@ -60,13 +59,13 @@ void nodeInsert(struct redBlack* tree, struct node* n)
     x = tree->root;
     temp = tree->nil;
 
-    fprintf(stderr, "while\n");
+    //fprintf(stderr, "while\n");
     while(x != tree->nil)
     {
         temp = x;
         if(n->key < x->key)
         {
-            fprintf(stderr, "teste\n");
+            //fprintf(stderr, "teste\n");
             x = x->left;
         }
         else
@@ -79,7 +78,7 @@ void nodeInsert(struct redBlack* tree, struct node* n)
         tree->root = n;
     else if(n->key < temp->key)
     {
-        fprintf(stderr, "key<key\n");
+        //fprintf(stderr, "key<key\n");
         temp->left = n;
     }
     else
@@ -90,7 +89,7 @@ void nodeInsert(struct redBlack* tree, struct node* n)
 
 void insertFixup(struct redBlack* tree, struct node* n)
 {
-    fprintf(stderr, "insert\n");
+    //fprintf(stderr, "insert\n");
     struct node* temp;
 
     while(n->dad->color == RED)
@@ -149,16 +148,30 @@ void insertFixup(struct redBlack* tree, struct node* n)
     tree->root->color = BLACK;
 }
 
+// Função auxiliar para imprimir a árvore
+void print_tree_helper(struct redBlack* tree, struct node *node, int level) {
+    if (node == tree->nil) return;
+    
+    // Imprime o nó atual
+    printf("%*s%d(%s)\n", level * 4, "", node->key, 
+           node->color == RED ? "R" : "B");
+    
+    // Imprime os filhos recursivamente
+    print_tree_helper(tree, node->left, level + 1);
+    print_tree_helper(tree, node->right, level + 1);
+}
+
 void printTreeInOrder(struct redBlack* tree, struct node* n)
 {
     if(n == tree->nil)
         return;
 
-    printTreeInOrder(tree, n->left);
+    //printTreeInOrder(tree, n->left);
 
-    printf("%d\n", n->key);
-
-    printTreeInOrder(tree, n->right);
+    printf("-------------\n");
+    print_tree_helper(tree, n, 0);
+    printf("-------------\n");
+    //printTreeInOrder(tree, n->right);
 }
 
 void printTreePreOrder(struct redBlack* tree, struct node* n)
@@ -280,6 +293,7 @@ void nodeTransplant(struct redBlack* tree, struct node* u, struct node* v)
 /*Deleting node n at the tree*/
 void nodeDelete(struct redBlack* tree, struct node* n)
 {
+    fprintf(stderr, "exclui\n");
     struct node* temp;
     struct node* aux;
     int origColor;
@@ -309,7 +323,7 @@ void nodeDelete(struct redBlack* tree, struct node* n)
         {
             nodeTransplant(tree, temp, temp->left);
             temp->left = n->left;
-            temp->left->dad = n;
+            temp->left->dad = temp;
         }
 
         nodeTransplant(tree, n, temp);
@@ -322,7 +336,6 @@ void nodeDelete(struct redBlack* tree, struct node* n)
         deleteFixup(tree, aux);
         tree->nil->dad = tree->nil;
     }
-
     free(n);
 }
 int deleteFixup(struct redBlack* tree, struct node* n)
@@ -355,11 +368,11 @@ int deleteFixup(struct redBlack* tree, struct node* n)
                     temp = n->dad->right;
                 }
                 
-                //temp->color = n->dad->color;
-                //n->dad->color = BLACK;
-                //temp->right->color = BLACK;
-                //leftRotation(tree, n->dad);
-                //n = tree->root;
+                temp->color = n->dad->color;
+                n->dad->color = BLACK;
+                temp->right->color = BLACK;
+                leftRotation(tree, n->dad);
+                n = tree->root;
             }
         }
         else
@@ -377,12 +390,21 @@ int deleteFixup(struct redBlack* tree, struct node* n)
                 temp->color = RED;
                 n = n->dad;
             } 
-            else if(temp->left->color == BLACK)
+            else
             {
-                temp->right->color = BLACK;
-                temp->color = RED;
-                leftRotation(tree, temp);
-                temp = n->dad->left;
+                if(temp->left->color == BLACK)
+                {
+                    temp->right->color = BLACK;
+                    temp->color = RED;
+                    leftRotation(tree, temp);
+                    temp = n->dad->left;
+                }
+
+                temp->color = n->dad->color;
+                n->dad->color = BLACK;
+                temp->left->color = BLACK;
+                rightRotation(tree, n->dad);
+                n = tree->root;
             }
         }
     }
