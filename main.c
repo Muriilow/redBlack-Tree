@@ -2,13 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tree.h"
-#define MAX_LINE_LENGTH 256
+
+#define MAX_LINE_LENGTH 64
 
 int main()
 {
     struct node* temp;
     struct redBlack* tree;
-    int mode, key;
+    int key;
     char line[MAX_LINE_LENGTH];
     char command;
 
@@ -27,17 +28,13 @@ int main()
                 case 'i':
                     temp = nodeCreate(tree, key);
                     nodeInsert(tree, temp);
-                    printTreeInOrder(tree, tree->root);
                     break;
                     
                 case 'r':
                     temp = nodeSearch(tree, tree->root, key);
 
                     if(temp != NULL)
-                    {
                         nodeDelete(tree, temp);
-                        printTreeInOrder(tree, tree->root);
-                    }
                     break;
                     
                 default:
@@ -48,8 +45,7 @@ int main()
     
     //Cleaning buffer
     getchar();
-
-    //Removing the rest of the tree
+    printTreeInOrder(tree, tree->root, 0);
     destroyTree(tree, tree->root);
     free(tree->nil);
     free(tree);

@@ -4,14 +4,6 @@
 #define BLACK 0
 #define RED 1
 
-/* Regras da Arvore redBlack 
-* 1. Todo nó é vermelho ou preto.
-* 2. A raiz é preta.
-* 3. Toda folha (NIL) é preta.
-* 4. Se um nó é vermelho, então os seus filhos são pretos.
-* 5. Para cada nó, todos os caminhos simples do nó até folhas descendentes contêm o mesmo número de nós pretos.
-*/
-
 struct node
 {
     int key;
@@ -22,6 +14,7 @@ struct node
     void* value;
 };
 
+//Sentinel
 struct redBlack
 {
     struct node* root;
@@ -43,10 +36,13 @@ void insertFixup(struct redBlack* tree, struct node* n);
 //Search the desired key from the tree
 struct node* nodeSearch(struct redBlack* tree, struct node* n, int key);
 
+//Find the minimum key value
 struct node* findMin(struct redBlack* tree, struct node* n);
 
+//Find the maximum key value
 struct node* findMax(struct redBlack* tree, struct node* n);
 
+//Free all the nodes to prevent memory leak
 void destroyTree(struct redBlack*, struct node* n);
 
 //Change the right son of x to be the father, and x to be the left child
@@ -59,14 +55,15 @@ struct node* rightRotation(struct redBlack* tree, struct node* x);
 void nodeDelete(struct redBlack* tree, struct node* n);
 
 //Fix any problems caused to the tree when deleting the node "n"
-int deleteFixup(struct redBlack* tree, struct node* n);
+void deleteFixup(struct redBlack* tree, struct node* n);
 
+//Change the dad of "v" to the dad of "u", and the child of the dad of "u" to "v"
 void nodeTransplant(struct redBlack* tree, struct node* u, struct node* v);
 
 //Print Functions
-void printTreeInOrder(struct redBlack* tree, struct node* n);
+void printTreeInOrder(struct redBlack* tree, struct node* n, int level);
 
-void printTreePreOrder(struct redBlack* tree, struct node* n);
+void printTreePreOrder(struct redBlack* tree, struct node* n, int level);
 
-void printTreePosOrder(struct redBlack* tree, struct node* n);
+void printTreePosOrder(struct redBlack* tree, struct node* n, int level);
 #endif
